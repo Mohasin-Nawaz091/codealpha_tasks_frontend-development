@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        .sidebar {
+            width: 80px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .gallery-container {
+            flex: 1;
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .image-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 300px;
+        }
+
+        .image-item {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            overflow: hidden;
+            transform-origin: center 300px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .image-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #aaa;
+        }
+
+        .background-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+            letter-spacing: 5px;
+        }
+
+        .heading {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            color: white;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+            
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .image-ring {
+                width: 400px;
+                height: 200px;
+            }
+
+            .image-item {
+                width: 100px;
+                height: 100px;
+                transform-origin: center 200px;
+            }
+
+            .background-text {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <button class="control-btn">⌂</button>
+        <button class="control-btn" onclick="window.location.href='fav.html'">❤</button>
+    </nav>
+
+    <div class="background-text">Wallpaper Gallery</div>
+    <div class="heading">CodeAlpha's Internship Project</div>
+
+    <div class="gallery-container">
+        <div class="image-ring" id="imageRing"></div>
+    </div>
+
+    <div class="modal" id="imageModal">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    
+
+    <script>
+        const images = [
+            'https://static1.srcdn.com/wordpress/wp-content/uploads/2023/09/best-anime-of-all-time.jpg',
+            'https://4kwallpapers.com/images/walls/thumbs_2t/14684.png',
+            'https://4kwallpapers.com/images/walls/thumbs_2t/12116.png',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAKMlvoBaFq1rcMMDNj89-HabS1aCvr0f8Uw&s',
+            'https://4kwallpapers.com/images/walls/thumbs_2t/12360.png',
+            'https://4kwallpapers.com/images/walls/thumbs_2t/17605.png'
+        ];
+
+        const imageRing = document.getElementById('imageRing');
+        const angleStep = 360 / images.length;
+
+        images.forEach((imgSrc, index) => {
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'image-item';
+            imgContainer.style.transform = `rotate(${index * angleStep}deg)`;
+            
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.alt = `Gallery Image ${index + 1}`;
+            
+            imgContainer.appendChild(img);
+            imageRing.appendChild(imgContainer);
+
+            imgContainer.addEventListener('click', () => openModal(imgSrc));
+        });
+
+        function openModal(src) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'block';
+            modalImg.src = src;
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        
+        let currentRotation = 0;
+        setInterval(() => {
+            currentRotation += 0.2;
+            imageRing.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
+        }, 50);
+    </script>
+    
+</body>
+</html>

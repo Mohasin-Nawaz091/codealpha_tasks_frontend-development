@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif; /* More professional font */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to bottom right, #e0eafc, #cfdef3); /* Modern background gradient */
+            margin: 0; /* Remove default body margin */
+        }
+
+        .calculator {
+            border: none; /* Remove default border */
+            padding: 20px;
+            border-radius: 10px; /* More rounded corners */
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Softer shadow */
+        }
+
+        .display {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 15px; /* Increased padding */
+            font-size: 24px; /* Larger font size */
+            border: 1px solid #ddd; /* Lighter border */
+            text-align: right;
+            box-sizing: border-box;
+            border-radius: 5px;
+            background-color: #f8f8f8;  /* Slightly off-white background */
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+        }
+
+        button {
+            padding: 18px; /* Increased padding */
+            font-size: 20px; /* Larger font size */
+            border: none; /* Remove default border */
+            border-radius: 8px; /* More rounded corners */
+            cursor: pointer;
+            background-color: #eee;
+            transition: background-color 0.2s; /* Smooth transition on hover */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle button shadow */
+        }
+
+        button:hover {
+            background-color: #ddd;
+        }
+
+        .operator {
+            background-color: #4285f4; /* Google Blue */
+            color: white;
+        }
+
+        .clear {
+            background-color: #ea4335; /* Google Red */
+            color: white;
+        }
+
+        .equal {
+            background-color: #34a853; /* Google Green */
+            color: white;
+        }
+        .backspace {
+          background-color: #fbbc05; /* Google Yellow */
+          color: white;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="calculator">
+        <input type="text" class="display" id="display" readonly placeholder="CodeAplha's Calculator">
+        <div class="buttons">
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button class="operator" onclick="appendToDisplay('+')">+</button>
+
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button class="operator" onclick="appendToDisplay('-')">-</button>
+
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button class="operator" onclick="appendToDisplay('*')">*</button>
+
+            <button onclick="appendToDisplay('0')">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button class="equal" onclick="calculate()">=</button>
+            <button class="operator" onclick="appendToDisplay('/')">/</button>
+
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="backspace" onclick="backspace()">DEL</button> </div>
+    </div>
+
+    <script>
+        function appendToDisplay(value) {
+            document.getElementById('display').value += value;
+        }
+
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+        }
+
+        function calculate() {
+            try {
+                const result = eval(document.getElementById('display').value);
+                document.getElementById('display').value = result;
+            } catch (error) {
+                document.getElementById('display').value = 'Error';
+            }
+        }
+
+        function backspace() {
+            let display = document.getElementById('display');
+            display.value = display.value.slice(0, -1); // Remove last character
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            const allowedKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '/', '.', 'Enter', 'Backspace'];
+
+            if (allowedKeys.includes(key)) {
+                event.preventDefault(); // Prevent default browser behavior for these keys
+
+                if (key === 'Enter') {
+                    calculate();
+                } else if (key === 'Backspace') {
+                    backspace();
+                } else {
+                    appendToDisplay(key);
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
